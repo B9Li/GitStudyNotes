@@ -4,6 +4,7 @@ in dev add str.
 
 
 
+<<<<<<< HEAD
 
 
 
@@ -12,3 +13,6 @@ in dev add str.
 
 
 in main test add chongtu.
+=======
+in dev test chongtu.
+>>>>>>> dev
