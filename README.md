@@ -3,22 +3,4 @@
 in dev add str.
 
 
-
-<<<<<<< HEAD
-
-
-
-
-
-
-
-in main test add chongtu.
-=======
-in dev test chongtu.
->>>>>>> dev
-
-
-
-
-
-in main new data
+end file
