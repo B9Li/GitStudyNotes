@@ -1,0 +1,103 @@
+Git简介
+----Git是什么？
+        >git是分布式版本控制系统
+----集中式vs分布式   
+        >集中式就是东西放在中央服务器，中央服务器类似图书馆，所有人进出图书馆，增删改查
+        >分布式就是每个人的电脑上都有一个完整的版本库，分布式通常有一台充当中央服务器，供分布式交换信息
+----安装git
+        >Linux,mac,win
+        >编译安装,1官网下载源码  2./config    3make    4sudo make install
+----创建版本库
+        >什么是版本库
+            版本库又名仓库，可以简单理解成一个目录，目录内所有文件可以被Git管理，每个管理动作都可跟踪历史，以及“还原”
+        >创建版本库
+            1.先选择合适的地方，创建一个空目录
+             $ mkdir learngit
+             $ cd learngit
+             $ pwd
+             /Users/michael/learngit
+             2.通过git init命令把这个目录编程Git可以管理的仓库
+             $ git init
+              Initialized empty Git repository in /Users/michael/learngit/.git/
+             3.把文件添加到版本库
+              GIT只能跟踪文本文件的改动，而图片、视频等是二进制文件，可以由它管理但是这些文件无法追踪变化
+              微软的Word也不行（也是二进制格式），要使用纯文本方式编写文件         
+              文本编码用UTF-8
+              不要用WINDOWS的记事本，WINDOWS记事本在每个文件开头添加了0xefbbbf十六进制字符，会遇到很多问题
+              第一步：用命令git add告诉Git 把文件添加到仓库：
+                  git add ****.txt
+              第二步：用命令git commit告诉Git，把文件提交到仓库:
+                  git commit -m "wrote a readme file"
+              这里有个问题需要先设置邮箱和用户名
+              "add"是添加到仓库   “commit"是一次性提交
+----时光机穿梭
+        >修改文件--直接打开文件修改
+            指令“git status"命令可以让我们查看仓库当前状态
+            指令  “git diff"用于查看修改动作
+            指令"git add ***.txt"将文件添加至仓库
+            指令“git status"
+            指令“git commit -m "****你的备注内容"
+        >版本回退
+            指令 "git log"查看commit记录  "git log --pretty=oneline"精简查看   1094Afsdf是commit id（版本号)
+            指令“git reset --hard HEAD^"退回到上一版本，“git reset --hard [commit id前缀]"  退回到commit id版本
+            指令 ”git reflog“ 该指令记录每一次命令，可查询commit id
+        >工作区和暂存区
+            工作区  init的那个目录就是一个工作区
+            版本库  工作区内的隐藏目录 .git 不算工作区，是Git的版本库，查询隐藏目录可用指令"ls -ah"
+            暂存区   版本库内有个文件stage/index的暂存区,以及第一个分支master,以及指向master的指针HEAD
+            git add 实际上是把文件修改添加到暂存区
+            git commit 提交更改，实际上是把暂存区的所有内容提交到当前分支
+            创建Git版本库时，Git自动创建唯一一个master分支，git commit就是往master分支上提交更改
+            git add就是往暂存区丢，git commit就是往分支上提交全部修改
+         >管理修改
+            Git优秀点是因为Git跟踪并管理的是修改，而非文件。
+         >撤销修改
+            指令"git checkout -- <****.txt>"  让工作区的文档撤回到commit的状态，如果已经add，则退回到add状态
+            指令”git reset HEAD <****.txt>" 让暂存区的文档撤回
+         >删除文件
+            删除一个文件后
+            git会识别工作区与版本库的内容是否一致
+            当已工作区为准时，git rm <****.txt> ,git commit 校正
+            当已版本库为准时，git checkout -- <****.txt> 恢复工作区文件。
+----远程仓库
+            >添加远程库
+           上述内容皆为本地操作，如需远程仓库中转可以用github
+            1.申请github账号
+            2.因为git仓库和github中转仓库传输用SSH加密，所以要配置SSH
+               在你的终端键入$ ssh-keygen -t rsa -C "youremail@example.com"
+               配置完成后登入github网站，找到SSH Keys
+               填写标签，文本框内添加id_rsa.pub内容
+               id_rsa是密钥不可泄露，id_rsa.pub是公钥，
+             为什么github需要SSH KEY?
+              >确保中转仓库的提交的内容是本人
+             将github注册好就创建一个仓库，
+             然后将本地与github上创建的仓库进行关联“git remote add origin git@github.com:<B9Li*github用户名>/learngit.git”
+              上条指令代码中的“origin”等于在本地进行的as别名
+             指令“$ git push -u origin master”  就是把本地的master分支推送到orgin关联仓库区，-u则是将本地与云仓库的分支进行关联
+             指令“$ git push origin master”就可以将本地后续修改推送至Github
+             删除只能删除关联，推送可以进行同步，但是删除云中转需要在云中转本地进行（此处经实验有误）
+              >从远程库克隆
+               与添加远程库没有什么区别，同样需要关联仓库
+               指令“git remote add origin git@github.com:<B9Li*github用户名>/learngit.git”  用于关联仓库，记得关键字及目录修改
+               这里有个坑，克隆下来的目录主线名字可能叫main，所以关联后push失败有可能是 git pussh -u orgin "main" 主线名字打错，这个-u参数用于将本地主线与远程主线关联，后续推送或拉取就可以简化命令
+----分支管理
+             分支管理就是在主分支master上创建新分支，用于多人协作时隔离操作
+             >创建与合并分支
+                    每次提交，都会形成一条链，这个链条就是主分支master,HEAD指向master,master指向最新提交，就能确定当前分支，以及当前分支的提交点
+                    当我们创建新的分支时，Git新建一个指针分支，指向master相同的提交，再将HEAD指向dev就完成分叉，在新分支进行提交，新分支指针就往前移动一步，而原master分支不变
+                    合并就是将master指向dev的当前提交，就完成了合并，完成合并后dev新指针可以删除。
+                    其实就是主线指向分线，再由HEAD指向主线，就完成不同线间的合并
+                    复合指令“git switch -c dev" 创建，并切换到dev分支   git checkout -b <name>
+                    指令”git branch"查看分支
+                    指令“git branch <name>"创建分支 
+                    指令”git switch <name>”切换分支、git checkout <name>
+                    指令“git merge <name>"合并某分支到当前分支：git merge <name>
+                    指令”git branch -d <name>"删除分支 
+                    指令”git log --graph“查看支线路线     git log --graph --pretty=oneline --abbrev-commit查看分支合并图。
+                     Fast-forward信息提示就是告诉我们这次是快进模式，也就是直接把master指向dev的当前提交，速度非常快，但不是每次合并都能用Fast-forward
+              >解决冲突
+                      冲突就是主线与分线之间的修改有分歧，GIT无法判断，这时需要手动缕清楚逻辑，
+                      解决冲突的方法就是在主线进行修改，再添加、提交到库。，以修改主线形式合并冲突，然后删除分线。
+                    感悟：当合并分支发生冲突时会产生一个中介文件，当冲突解决并commit后会把两个冲突支线和这个中介文件一起提交并入主干
+              >分支管理策略
+                      
